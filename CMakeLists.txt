@@ -8,8 +8,8 @@ add_library(${PROJECT_NAME} OBJECT)
 
 target_sources(${PROJECT_NAME}
     PRIVATE
-        SndioPlayback.cpp
-        SndioPlayback.hpp
+        SndioDevice.cpp
+        SndioDevice.hpp
 )
 
 target_include_directories(${PROJECT_NAME}
