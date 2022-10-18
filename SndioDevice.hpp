@@ -76,6 +76,7 @@ namespace sndio {
 
         bool Open(char const* deviceName = SIO_DEVANY, bool nonblockFlag = false);
         size_t Record(void * signal, size_t size);
+        size_t RecordFull(void * signal, size_t size);
     };
 
     class Device : public PlaybackDevice, public RecorderDevice {

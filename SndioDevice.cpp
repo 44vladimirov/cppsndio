@@ -139,15 +139,7 @@ size_t sndio::PlaybackDevice::Play(void const* signal, size_t size) {
         return static_cast<size_t>(-1);
     }
 
-    sio_hdl * handler = Handler();
-    if (VerifyMode(DeviceMode::nonblock)) {
-        return sio_write(handler, signal, size);
-    }
-
-    uint8_t const* buffer = reinterpret_cast<uint8_t const*>(signal);
-    for (size_t i = 0; i < size; i += sio_write(handler, buffer + i, size - i))
-        ;
-    return size;
+    return sio_write(Handler(), signal, size);
 }
 
 bool sndio::RecorderDevice::Open(char const* deviceName, bool nonblockFlag) {
@@ -161,11 +153,15 @@ size_t sndio::RecorderDevice::Record(void * signal, size_t size) {
         return static_cast<size_t>(-1);
     }
 
-    sio_hdl * handler = Handler();
-    if (VerifyMode(DeviceMode::nonblock)) {
-        return sio_read(handler, signal, size);
+    return sio_read(Handler(), signal, size);
+}
+
+size_t sndio::RecorderDevice::RecordFull(void * signal, size_t size) {
+    if (!VerifyMode(DeviceMode::recorder) || VerifyMode(DeviceMode::nonblock) || !Started()) {
+        return static_cast<size_t>(-1);
     }
 
+    sio_hdl * handler = Handler();
     uint8_t * buffer = reinterpret_cast<uint8_t *>(signal);
     for (size_t i = 0; i < size; i += sio_read(handler, buffer + i, size - i))
         ;
